@@ -1,3 +1,5 @@
+# Thread Summary 
+
 ## Compiling Pthreads
 * `#include <pthread.h>`
 ```bash
@@ -22,7 +24,7 @@ int pthread_create(pthread_t * thread,
 * void * (\*start_routine) - pointer to the functions to be threaded
 * arg - pointer to argument of function. To pass multiple arguments, send a pointer to a structure.
 
-It's worth being noted that pthread_create function starts creating a new thread which runs function of start_routine, this instruction is not finished when function returns, it is finished when the thread is created and function starts running.  
+It's worth being noted that pthread_create function starts creating a new thread which runs function of start_routine, this instruction is not finished when function returns, it is finished when the thread is created and function starts running.
 {:.warning}
 
 Data race or race condition:
@@ -136,6 +138,37 @@ int pthread_mutext_unlock(pthread_mutext_t *mutext);
 ## Joins
 A join is performed when one wants to wait for a thread to finish. Instructions that should be executed after join statement could be excuted only after thread with join statement finished, including main exit. A thread calling routine may launch multiple threads then wait for them to finish to get the results. One wait for the completion of the threads with a join.
 
+check how c programming implement pthread join statement: [link]();
+
+Output difference without joins and with joins:
+```bash
+hadley@hadley-MacBookPro:~/Developments/pthreads/pthread_join$ ./pthread_join 
+counter valus is: 1
+counter valus is: 2
+counter valus is: 3
+counter valus is: 4
+counter valus is: 5
+counter valus is: 6
+counter valus is: 7
+counter valus is: 8
+counter valus is: 9
+final counter value: 9
+counter valus is: counter valus is: 10
+hadley@hadley-MacBookPro:~/Developments/pthreads/pthread_join$ cc -o pthread_join -pthread pthread_join.c 
+hadley@hadley-MacBookPro:~/Developments/pthreads/pthread_join$ ./pthread_join 
+counter valus is: 1
+counter valus is: 2
+counter valus is: 3
+counter valus is: 4
+counter valus is: 5
+counter valus is: 6
+counter valus is: 7
+counter valus is: 8
+counter valus is: 9
+counter valus is: 10
+final counter value: 10
+```
+
 
 ## Pthread Condition Variables
 ### Mechnisms:
@@ -161,7 +194,6 @@ int pthread_cond_init(pthread_cond_t \* cond,
 
 
 ## Reference
-
 
 
 

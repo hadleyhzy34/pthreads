@@ -1,15 +1,3 @@
----
-layout: post
-title: Threas&Concurrency
-key: 20201027
-tags:
-  - OS
-  - Linux
-  - Ubuntu
-  - Threas
-  - Concurrency
----
-
 ## Compiling Pthreads
 * `#include <pthread.h>`
 ```bash
@@ -34,7 +22,7 @@ int pthread_create(pthread_t * thread,
 * void * (\*start_routine) - pointer to the functions to be threaded
 * arg - pointer to argument of function. To pass multiple arguments, send a pointer to a structure.
 
-It's worth being noted that pthread_create function starts creating a new thread which runs function of start_routine, this instruction is not finished when function returns, it is finished when the thread is created and function starts running.
+It's worth being noted that pthread_create function starts creating a new thread which runs function of start_routine, this instruction is not finished when function returns, it is finished when the thread is created and function starts running.  
 {:.warning}
 
 Data race or race condition:

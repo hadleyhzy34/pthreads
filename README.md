@@ -238,19 +238,46 @@ Condition variable allows threads to suspend execution and relinquish the proces
 | 5. When signalled, wake up. count_mutex is locked and continue | 6. Continue and count_mutex is locked |
 
 
+### Condition Variable producer-consumer case:
+
+```c
+//consumer: print and clear
+Lock(m){
+	while(my_list.not_full())
+		wait(m,list_full);  //automatically unlock m mutex when it's waited and automatically lock m mutex when it's signalled
+	my_list.print_and_remove_all();
+} //unlock;
+```
+
+```c
+//producers:safe_insert
+Lock(m){
+	my_list.insert(mythread_id);
+	if my_list.full()
+		Signal(list_full);
+}  //unlock
+```
+
 ### Mechnisms:
 
 * pthread_cond_wait() blocks the calling thread until the specified condition is signalled. This routine should be called while mutex is locked and it will automatically release the mutex while it waits.  
 
-* pthread_cond_signal() routine is used to signal another thread which is waiting on the condition variable. It should be called after mutex is locked, and must unlock mutex in order for pthread_cond_wait() routine to complete.  
+* pthread_cond_signal() routine is used to signal another thread which is waiting on the condition variable. It should be called after mutex is locked, and must unlock mutex in order for pthread_cond_wait() routine to complete.
 
-* Condition
 
 * Wait
 
+`wait(mutex,cond)`
+mutex is automatically released & re-acquired on wait
+
 * Signal
+`signal(cond)`
+notify only one thread waiting on condition
+
 
 * Broadcast
+`broadcast(cond)`
+notify all waiting threads
 
 ### Other Condition variable operations
 int pthread_cond_init(pthread_cond_t \* cond,

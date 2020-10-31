@@ -240,7 +240,10 @@ Condition variable allows threads to suspend execution and relinquish the proces
 
 ### Mechnisms:
 
-* pthread_cond_wait() blocks the calling thread until the specified condition is signalled.
+* pthread_cond_wait() blocks the calling thread until the specified condition is signalled. This routine should be called while mutex is locked and it will automatically release the mutex while it waits.  
+
+* pthread_cond_signal() routine is used to signal another thread which is waiting on the condition variable. It should be called after mutex is locked, and must unlock mutex in order for pthread_cond_wait() routine to complete.  
+
 * Condition
 
 * Wait

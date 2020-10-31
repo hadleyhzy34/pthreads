@@ -231,8 +231,16 @@ pthread_cond_t condition_cond = PTHREAD_COND_INITIALIZER;
 
 Condition variable allows threads to suspend execution and relinquish the processor. A condition variable must always be associated with a mutex to avoid a race condition. A dead lock could happend when one thread signals the condition before the first thread actually waits on it.
 
+| Thread A    |  Thread B  |  
+|-------------|:-------------:|
+| 1.lock condition mutex |  3.lock condition mutex | 
+| 2. if condition occurs, block Thread A, unlock condition mutex |    4.check if condition occurs, signal Thread A, unlock condition mutex, it could go step 5 or 6   |
+| 5. When signalled, wake up. count_mutex is locked and continue | 6. Continue and count_mutex is locked |
+
 
 ### Mechnisms:
+
+* pthread_cond_wait() blocks the calling thread until the specified condition is signalled.
 * Condition
 
 * Wait

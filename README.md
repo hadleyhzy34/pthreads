@@ -24,6 +24,18 @@ int pthread_create(pthread_t * thread,
 * void * (\*start_routine) - pointer to the functions to be threaded
 * arg - pointer to argument of function. To pass multiple arguments, send a pointer to a structure.
 
+`pthread_create()` returns zero when the call completes successfully. Any other return value indicates that an error occurred. When any of the following conditions are detected, `pthread_create()` fails and returns the corresponding value.
+
+`EAGAIN`  
+A system limit is exceeded, such as when too many threads have been created.
+
+`EINVAl`  
+The value of attr is invalid.
+
+`EPERM` 
+The caller does not have appropriate permission to set the required scheduling parameters or scheduling policy.
+
+
 It's worth being noted that pthread_create function starts creating a new thread which runs function of start_routine, this instruction is not finished when function returns, it is finished when the thread is created and function starts running.
 {:.warning}
 
@@ -108,6 +120,29 @@ counter valus is: 10
 
 When a mutex lock is attempted against a mutex which is held by another thread, the thread is blocked until the mutex is unlocked. When a thread terminates, the mutex does not unless explicitly unlocked. Nothing happens by default.
 
+It's worth being noted that mutex thread is locked not based on global variables, it's based on shared mutex variable mutex1 or mutex2... if both function used the same mutex initializer mutex1, then global variable which has the same scope as mutex will be locked and unlocked based upon function oepration and order sequence. But if function does not share the same mutex variable even though different function has the same global variable to be manipulated, it still could cause race conditions issue. Check output different from pthread_mutex/mutex_test.c:
+
+setting different mutex variable on different functions:
+
+```bash
+Hadleys-MacBook-Pro:pthread_mutex hadley$ ./mutex_test 
+counter valus is: 1 current thread is 2
+counter valus is: 3 current thread is 3
+counter valus is: 4 current thread is 4
+counter valus is: 2 current thread is 1
+counter valus is: 5 current thread is 5
+```
+setting same mutex variable on different functions:
+
+```bash
+Hadleys-MacBook-Pro:pthread_mutex hadley$ ./mutex_test 
+counter valus is: 1 current thread is 1
+counter valus is: 2 current thread is 1
+counter valus is: 3 current thread is 1
+counter valus is: 4 current thread is 1
+counter valus is: 5 current thread is 1
+```
+
 
 ### Mechanisms:  
 * Pthread mutex type:
@@ -171,6 +206,32 @@ final counter value: 10
 
 
 ## Pthread Condition Variables
+
+Condition variables provide yet another way for threads to synchronize. While mutexes implement synchronization by controlling thread access to data, condition variables allow threads to synchronize based upon the actual value of data.
+
+* A condition variable is always used in conjunction with a mutex lock.
+
+Main Thread:
+
+* declare and initialize global data/variables which require synchronization
+* declare and initialize a condition variable object
+* declare and initialize an associated mutex
+* create threads A and B to do work
+
+
+Declaration:
+```c
+//mutex for global variable
+pthread_mutex_t count_mutex = PTHREAD_MUTEX_INITIALIZER;
+//mutex for condition checking
+pthread_mutex_t condition_mutex = PTHREAD_MUTEX_INITIALIZER;
+//condition variable
+pthread_cond_t condition_cond = PTHREAD_COND_INITIALIZER;
+```
+
+Condition variable allows threads to suspend execution and relinquish the processor. A condition variable must always be associated with a mutex to avoid a race condition. A dead lock could happend when one thread signals the condition before the first thread actually waits on it.
+
+
 ### Mechnisms:
 * Condition
 

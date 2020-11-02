@@ -287,6 +287,47 @@ int pthread_cond_init(pthread_cond_t \* cond,
 1. do not forget to notify waiting threads
 2. whe
 
+### Readers/Writers Problem
+
+readers threads: read operation to access the shared state for reading
+
+writers threads: other set of threads want to perform write operations, access that same shared variable,shared state, and modify it.
+
+We cannot have a situation in which a reader and a writer thread are accessing the shared resource at the same time. But for readers, with mutexes, we cannot express that multiple readers can be performing access to the shared resource at the same time.
+
+Solution: using condition variables
+
+* statement  
+if((read_counter==0)and(writer_counter==0))
+->r ok, w ok
+
+if(read_counter>0)
+->r ok
+
+if(writer_count==1)
+->r not, w not
+
+* Task
+state of shared file/resource:
+free: resource_counter=0
+reading:resource_counter>0
+writing:resource_counter=-1
+
+### Critical Section Structure
+
+
+### Common Pitfalls
+
+### Spurious wake ups
+
+### Deadlocks
+
+
+
+
+
+
+
 
 
 
